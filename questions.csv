@@ -1,0 +1,24 @@
+question_id,question_text,category
+1,How long have you held the account?,Account
+2,What type of device do you use to access your account?,Account
+3,"You recently made a (large) transaction of £X, what was the merchant?",Account
+4,"In the past 6 months you made a transaction with an Airline, which airline?",Account
+5,How do you make payment into the account?,Account
+6,Do you have any other NewDay accounts?,Account
+7,What are the last four digits of your account number?,Account
+8,Have you used your card abroad in the past 12 months?,Account
+9,What is the name of your secondary cardholder?,Account
+10,"You recently raised a dispute with X merchant, what was the item / why dispute?",Account
+11,"You have a DD set up on the account, what are the last four digits of the account number?",Account
+12,How old are you?,Personal
+13,What is your star sign?,Personal
+14,What county do you live in?,Personal
+15,What was your previous address?,Personal
+16,Have you changed your address in the last 12 months?,Personal
+17,Have you ever changed your name on this account?,Personal
+18,(London Only) what is your nearest Tube station?,Personal
+19,Have you been contacted by someone claiming to be from our bank recently?,APP
+20,Have you been contacted by someone claiming to be a family member and asked to make this transaction?,APP
+21,"Have you given remote access to your device to anyone (e.g., via AnyDesk)?",APP
+22,Did anyone ask you to move money for “safety” reasons?,APP
+23,Have you been asked to invest or transfer funds by someone you met online?,APP

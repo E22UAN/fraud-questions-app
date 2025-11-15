@@ -60,16 +60,35 @@ if "selected" in st.session_state:
         })
         st.markdown("---")
 
-# --- Save results to CSV ---
-    if st.button("Save Results"):
-        results_df = pd.DataFrame(responses)
+# ---  ---
+import gspread
+from google.oauth2.service_account import Credentials
+from datetime import datetime
 
-# Create file if not exists
-        if not os.path.exists("results.csv"):
-            results_df.to_csv("results.csv", index=False)
-            st.success("Results saved to new file results.csv ✅")
-        else:
-            existing = pd.read_csv("results.csv")
-            combined = pd.concat([existing, results_df], ignore_index=True)
-            combined.to_csv("results.csv", index=False)
-            st.success("Results appended to results.csv ✅")
+# Connect to Google Sheets
+scope = ["https://www.googleapis.com/auth/spreadsheets"]
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"], scopes=scope
+)
+client = gspread.authorize(creds)
+
+# Open your sheet
+SHEET_NAME = "fraud_results"  # change to your Google Sheet name
+sheet = client.open(SHEET_NAME).sheet1
+
+# Function to save results
+def save_result(question, result, category):
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    sheet.append_row([timestamp, question, result, category])
+
+# --- Save all responses to Google Sheets ---
+if "selected" in st.session_state:
+    if st.button("Save All Results"):
+        for response in responses:
+            save_result(
+                question=response["question_text"],
+                result=response["result"],
+                category=response["category"],
+            )
+        st.success("All results saved to Google Sheets!")
+

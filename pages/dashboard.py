@@ -1,23 +1,48 @@
 import streamlit as st
 import pandas as pd
+import time
+
+# Refresh every 10 seconds
+st_autorefresh = st.experimental_rerun
+st_autorefresh_interval = 10  # seconds
+
+if "last_refresh" not in st.session_state:
+    st.session_state["last_refresh"] = time.time()
+else:
+    if time.time() - st.session_state["last_refresh"] > st_autorefresh_interval:
+        st.session_state["last_refresh"] = time.time()
+        st.experimental_rerun()
+
 
 st.title("Security Question Dashboard 📊")
 
 # Load results
-@st.cache_data
-def load_results():
-    try:
-        df = pd.read_csv("results.csv")
-        return df
-    except FileNotFoundError:
-        st.error("No results.csv file found yet. Please complete some verifications first.")
-        return pd.DataFrame()
+import streamlit as st
+import pandas as pd
+import gspread
+from google.oauth2.service_account import Credentials
 
-df = load_results()
+# Connect to Google Sheets
+scope = ["https://www.googleapis.com/auth/spreadsheets"]
+creds = Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"], scopes=scope
+)
+client = gspread.authorize(creds)
 
-if df.empty:
-    st.info("No data yet — once you have saved some results, theyll appear here.")
-    st.stop()
+SHEET_NAME = "fraud_results"
+sheet = client.open(SHEET_NAME).Sheet1
+
+# Load all data
+data = sheet.get_all_records()
+df = pd.DataFrame(data)
+
+st.title("Fraud Question Dashboard")
+st.dataframe(df)
+
+if not df.empty:
+    pass_rate = (df["result"].str.lower() == "pass").mean() * 100
+    st.metric("Overall Pass Rate", f"{pass_rate:.1f}%")
+
 
 # --- Basic stats ---
 st.subheader("Overall Summary")
